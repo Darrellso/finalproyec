@@ -1,0 +1,241 @@
+<!-- customization.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="./styles.css">
+    <title>Customize Your Order</title>
+</head>
+<body>
+    <!-- Contenido de la vista de personalización -->
+    <h1>Customize Your Order</h1>
+    <form id="customization-form">
+        <label for="pot">Choose your pot:</label>
+        <div>
+            <input type="radio" id="pot-clay" name="pot" value="simple-clay-pot" required>
+            <label for="pot-clay">Clay</label>
+        </div>
+        <div>
+            <input type="radio" id="pot-ceramic" name="pot" value="simple-ceramic-pot" required>
+            <label for="pot-ceramic">Ceramic</label>
+        </div>
+
+        <label for="pot-decorations-toggle">Pot decorations:</label>
+        <div>
+            <input type="checkbox" id="pot-decorations-toggle">
+            <label for="pot-decorations-toggle">Yes / No</label>
+        </div>
+
+        <div id="pot-color-options">
+            <label for="pot-color">Pot color:</label>
+        <div>
+          <input
+            type="radio"
+            id="pot-color-toggle"
+            name="pot-color-toggle"
+            value="yes"
+          />
+          <label for="pot-color-toggle">Yes</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="pot-color-toggle"
+            value="no"
+            name="pot-color-toggle"
+          />
+          <label for="pot-color-toggle">No</label>
+        </div>
+            <div id="pot-color-options-list" style="display: none">
+                <div>
+                  <h2>Choose Style</h2>
+                  <input
+                    type="radio"
+                    id="pot-color-blue"
+                    name="pot-color"
+                    value="blue"
+                  />
+                  <label for="pot-color-blue">Blue</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="pot-color-pink"
+                    name="pot-color"
+                    value="pink"
+                  />
+                  <label for="pot-color-pink">Pink</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="pot-color-green"
+                    name="pot-color"
+                    value="green"
+                  />
+                  <label for="pot-color-green">Green</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="pot-color-purple"
+                    name="pot-color"
+                    value="purple"
+                  />
+                  <label for="pot-color-purple">Purple</label>
+                </div>
+              </div>
+        </div>
+
+        <label for="plant">Choose your plant:</label>
+        <select id="plant" name="plant" required>
+            <option value="aglaonema">Aglaonema Silver Bay</option>
+            <option value="aloe">Aloe Vera</option>
+            <option value="fern">Boston Fern</option>
+            <option value="cactus">Cactus</option>
+            <option value="monstera">Monstera Deliciosa</option>
+            <option value="lily">Peace Lily</option>
+            <option value="sansevieria">Sansevieria</option>
+        </select>
+
+        <label for="soil">Choose your soil:</label>
+        <div>
+            <input type="radio" id="soil-composted" name="soil" value="soil-composted" required>
+            <label for="soil-composted">Basic composted soil</label>
+        </div>
+        <div>
+            <input type="radio" id="soil-fertilized" name="soil" value="soil-fertilized" required>
+            <label for="soil-fertilized">Premium fertilized soil</label>
+        </div>
+        <div>
+            <input type="radio" id="soil-drainage" name="soil" value="soil-drainage" required>
+            <label for="soil-drainage">Easy drainage soil</label>
+        </div>
+
+        <label for="extras">Choose your extras:</label>
+        <div>
+            <input type="checkbox" id="extra-moss" name="extras" value="moss">
+            <label for="extra-moss">Moss pole</label>
+        </div>
+        <div>
+            <input type="checkbox" id="extra-pebbles" name="extras" value="pebbles">
+            <label for="extra-pebbles">Pebbles</label>
+        </div>
+        <div>
+            <input type="checkbox" id="extra-plants" name="extras" value="plants">
+            <label for="extra-plants">Smaller plants</label>
+        </div>
+
+        <button type="submit" id="submit-customization">Place Order</button>
+        <button id="check-store-button">Check store availability</button>
+    </form>
+    <div id="image-container"></div>
+    <div id="order-info"></div>
+    <script type="module" src="customize.bundle.js"></script>
+    <script>
+        // Acceder al objeto almacenado en localStorage
+        const storedRecommendation = JSON.parse(localStorage.getItem("localPlant"));
+    
+        // Obtener el contenedor de imágenes
+        const imageContainer = document.getElementById("image-container");
+    
+        // Crear elementos de imagen y asignar atributos
+        const plantImage = document.createElement("img");
+        plantImage.alt = storedRecommendation.plantName;
+        imageContainer.appendChild(plantImage);
+    
+        const potImage = document.createElement("img");
+        potImage.alt = "Pot Image";
+        imageContainer.appendChild(potImage);
+    
+        const soilImage = document.createElement("img");
+        soilImage.alt = "Soil Image";
+        imageContainer.appendChild(soilImage);
+    
+        const extrasImage = document.createElement("img");
+        extrasImage.alt = "Extras Image";
+        imageContainer.appendChild(extrasImage);
+    
+        // Agregar eventos de escucha a los elementos del formulario
+        const customizationForm = document.getElementById("customization-form");
+        const potDecorationsToggle = document.getElementById("pot-decorations-toggle");
+        const potColorToggle = document.querySelectorAll('input[name="pot-color-toggle"]');
+        const plantSelect = document.getElementById("plant");
+        const pottype = document.querySelectorAll('input[name="pot"]');
+        let potValue = storedRecommendation.potImage ;
+
+        pottype.forEach(pottype => {
+            pottype.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                potValue=selectedValue
+                updatePreview()
+            });
+        });
+        const soiltype = document.querySelectorAll('input[name="soil"]');
+      let soilvalue = storedRecommendation.soilImage;
+      soiltype.forEach((soiltype) => {
+        soiltype.addEventListener("change", (event) => {
+          const selectedValue = event.target.value;
+          soilvalue = selectedValue;
+          updatePreview();
+        });
+      });
+      
+      potColorToggle.forEach((potColorToggle) => {
+        potColorToggle.addEventListener("change", (event) => {
+          const block = document.getElementById("pot-color-options-list");
+          const selectedValue = event.target.value;
+
+          if (selectedValue === "yes") {
+            console.log(block);
+            block.style.display = "block";
+          } else {
+            block.style.display = "none";
+          }
+        });
+      });
+      const potColor = document.querySelectorAll('input[name="pot-color"]');
+      potColor.forEach((potColor) => {
+        potColor.addEventListener("change", (event) => {
+
+          const selectedValue = event.target.value;
+
+         console.log(selectedValue)
+        });
+      });
+
+    
+        potDecorationsToggle.addEventListener("change", updatePreview);
+        plantSelect.addEventListener("change", updatePreview);
+    
+        // Función para actualizar la vista previa de las imágenes  
+        function updatePreview() {
+            // Obtener valores seleccionados del formulario
+            const potDecorations = potDecorationsToggle.checked ? "Yes" : "No";
+            const potColor = potColorToggle.checked ? "Yes" : "No";
+            const plant = plantSelect.value;
+            const pottypes = potValue
+            const soilFinal = soilvalue;
+            // Actualizar atributos de las imágenes en la vista previa
+            plantImage.src = `./Assets/plant-${plant}.png`;
+            potImage.src = `./Assets/${pottypes}${potDecorations === "Yes" ? "-Decorated" : ""}.png`;
+            soilImage.src = `./Assets/${soilFinal}.png`;
+            extrasImage.src = `./Assets/${storedRecommendation.extras[0]}.png`;
+        }
+
+        localStorage.setItem("productPlants",JSON.stringify(updatePreview))
+        // Obtener el botón "Check store availability"
+const checkStoreButton = document.getElementById("check-store-button");
+
+// Agregar evento de clic al botón
+checkStoreButton.addEventListener("click", () => {
+  // Redirigir al usuario al view de producto (product.html)
+  window.location.href = "product.html";
+});
+
+        
+
+    </script>
+    
+</body>
+</html>
